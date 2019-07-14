@@ -1,5 +1,7 @@
 package com.example.musicplayer;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +14,37 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
-    public static class SongViewHolder extends RecyclerView.ViewHolder {
+
+    private Context context;
+
+    public interface ItemClickListener {
+        void onClick(View view, int position);
+    }
+
+    public class SongViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CardView cv;
         TextView songTitle;
         TextView songArtist;
         ImageView songPhoto;
+        private ItemClickListener itemClickListener;
 
         SongViewHolder(View itemView) {
             super(itemView);
+            context = itemView.getContext();
             cv = (CardView) itemView.findViewById(R.id.cv);
             songTitle = (TextView) itemView.findViewById(R.id.song_title);
             songArtist = (TextView) itemView.findViewById(R.id.song_artist);
             songPhoto = (ImageView) itemView.findViewById(R.id.song_photo);
+            itemView.setOnClickListener(this);
+        }
+
+        public void setItemClickListener(ItemClickListener itemClickListener) {
+            this.itemClickListener = itemClickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            itemClickListener.onClick(v, getAdapterPosition());
         }
     }
 
@@ -50,6 +71,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
         holder.songTitle.setText(songs.get(position).getTitle());
         holder.songArtist.setText(songs.get(position).getArtist());
         holder.songPhoto.setImageResource(songs.get(position).getPhoto());
+        holder.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(context, PlaySongActivity.class);
+                intent.putExtra("Position", position);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

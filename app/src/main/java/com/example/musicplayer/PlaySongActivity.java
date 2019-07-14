@@ -2,6 +2,7 @@ package com.example.musicplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,9 +22,9 @@ public class PlaySongActivity extends AppCompatActivity {
     TextView txtTitle, txtArtist, txtTimeNow, txtTimeTotal;
     SeekBar sbSong;
     ImageView ivPhoto;
-    ImageButton btnPrev, btnPlayPause, btnNext, btnShuffle;
-    int position = 0;
-    boolean shuffle = false;
+    ImageButton btnBack, btnReplay, btnPrev, btnPlayPause, btnNext, btnShuffle;
+    int position;
+    boolean replay = false, shuffle = false;
     MediaPlayer mediaPlayer;
 
     @Override
@@ -31,11 +32,15 @@ public class PlaySongActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_song);
 
+        Intent intent = this.getIntent();
+        position = intent.getIntExtra("Position", -1);
+
         mapping();
-        initSong();
+        songs = Song.initSong();
         createSong();
         setTimeTotal();
         updateTimeNow();
+        mediaPlayer.start();
 
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +109,19 @@ public class PlaySongActivity extends AppCompatActivity {
             }
         });
 
+        btnReplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (replay) {
+                    replay = false;
+                    btnReplay.setImageResource(R.drawable.btn_replay);
+                } else {
+                    replay = true;
+                    btnReplay.setImageResource(R.drawable.btn_replay_choose);
+                }
+            }
+        });
+
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,15 +135,21 @@ public class PlaySongActivity extends AppCompatActivity {
             }
         });
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PlaySongActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
         sbSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
@@ -142,6 +166,8 @@ public class PlaySongActivity extends AppCompatActivity {
         txtTimeTotal = (TextView) findViewById(R.id.timeTotal);
         sbSong = (SeekBar) findViewById(R.id.seek_bar);
         ivPhoto = (ImageView) findViewById(R.id.ivPhoto);
+        btnBack = (ImageButton) findViewById(R.id.btn_back);
+        btnReplay = (ImageButton) findViewById(R.id.btn_replay);
         btnPrev = (ImageButton) findViewById(R.id.btn_prev);
         btnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
         btnNext = (ImageButton) findViewById(R.id.btn_next);
@@ -160,27 +186,31 @@ public class PlaySongActivity extends AppCompatActivity {
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
-                        if (shuffle) {
-                            Random random = new Random();
-                            int n;
-                            do {
-                                n = random.nextInt(songs.size());
-                            } while (n == position);
-                            position = n;
-                        } else {
-                            position++;
-                            if (position > songs.size() - 1) {
-                                position = 0;
+                        if (!replay) {
+                            if (shuffle) {
+                                Random random = new Random();
+                                int n;
+                                do {
+                                    n = random.nextInt(songs.size());
+                                } while (n == position);
+                                position = n;
+                            } else {
+                                position++;
+                                if (position > songs.size() - 1) {
+                                    position = 0;
+                                }
                             }
+                            if (mediaPlayer.isPlaying()) {
+                                mediaPlayer.stop();
+                            }
+                            createSong();
+                            setTimeTotal();
+                            updateTimeNow();
+                            mediaPlayer.start();
+                            btnPlayPause.setImageResource(R.drawable.btn_pause);
+                        } else {
+                            mediaPlayer.start();
                         }
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.stop();
-                        }
-                        createSong();
-                        setTimeTotal();
-                        updateTimeNow();
-                        mediaPlayer.start();
-                        btnPlayPause.setImageResource(R.drawable.btn_pause);
                     }
                 });
 
@@ -200,18 +230,5 @@ public class PlaySongActivity extends AppCompatActivity {
         txtTitle.setText(songs.get(position).getTitle());
         txtArtist.setText(songs.get(position).getArtist());
         ivPhoto.setImageResource(songs.get(position).getPhoto());
-    }
-
-    private void initSong() {
-        songs = new ArrayList<>();
-        songs.add(new Song("Anh Đang Ở Đâu Đấy Anh", "Hương Giang", R.drawable.anh_dang_o_dau_day_anh_huong_giang, R.raw.anh_dang_o_dau_day_anh_huong_giang));
-        songs.add(new Song("Anh Nhà Ở Đâu Thế", "AMEE", R.drawable.anh_nha_o_dau_the_amee, R.raw.anh_nha_o_dau_the_amee));
-        songs.add(new Song("Đúng Người Đúng Thời Điểm", "Thanh Hưng", R.drawable.dung_nguoi_dung_thoi_diem_thanh_hung, R.raw.dung_nguoi_dung_thoi_diem_thanh_hung));
-        songs.add(new Song("Mamacita", "Super Junior", R.drawable.mamacita_super_junior, R.raw.mamacita_super_junior));
-        songs.add(new Song("Nếu Anh Đi", "Mỹ Tâm", R.drawable.neu_anh_di_my_tam, R.raw.neu_anh_di_my_tam));
-        songs.add(new Song("On My Way", "Alan Walker", R.drawable.on_my_way_alan_walker, R.raw.on_my_way_alan_walker));
-        songs.add(new Song("The Chance Of Love", "DBSK", R.drawable.the_chance_of_love_dbsk, R.raw.the_chance_of_love_dbsk));
-        songs.add(new Song("Thương Em Hơn Chính Anh", "Jun Phạm", R.drawable.thuong_em_hon_chinh_anh_jun_pham, R.raw.thuong_em_hon_chinh_anh_jun_pham));
-        songs.add(new Song("Yêu Em Dại Khờ", "Lou Hoàng", R.drawable.yeu_em_dai_kho_lou_hoang, R.raw.yeu_em_dai_kho_lou_hoang));
     }
 }

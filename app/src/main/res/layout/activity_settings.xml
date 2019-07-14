@@ -7,13 +7,28 @@
     android:orientation="vertical"
     tools:context=".SettingsActivity">
 
-    <SearchView
+    <RelativeLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginVertical="5dp"
-        android:layout_marginHorizontal="10dp"></SearchView>
+        android:layout_height="70dp">
+
+        <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="5dp"
+            android:layout_toLeftOf="@id/btn_stop"></SearchView>
+
+        <ImageButton
+            android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginHorizontal="10dp"
+            android:background="#FFFFFF"
+            android:src="@drawable/btn_stop" />
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
@@ -27,7 +42,7 @@
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="5dp"
         android:orientation="horizontal">
@@ -35,37 +50,41 @@
         <Button
             android:id="@+id/btn_songs"
             android:layout_width="wrap_content"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:drawableTop="@drawable/btn_song"
+            android:drawableTop="@drawable/btn_songs"
             android:text="Songs"
             android:textColor="#999999" />
 
         <Button
             android:id="@+id/btn_albums"
             android:layout_width="wrap_content"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:drawableTop="@drawable/btn_album"
+            android:drawableTop="@drawable/btn_albums"
             android:text="Albums"
             android:textColor="#999999" />
 
         <Button
             android:id="@+id/btn_artists"
             android:layout_width="wrap_content"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:drawableTop="@drawable/btn_artist"
+            android:drawableTop="@drawable/btn_artists"
             android:text="Artists"
             android:textColor="#999999" />
 
         <Button
             android:id="@+id/btn_settings"
             android:layout_width="wrap_content"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:drawableTop="@drawable/btn_settings_choose"
