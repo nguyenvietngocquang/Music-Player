@@ -14,8 +14,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Button btn_songs = (Button) findViewById(R.id.btn_songs);
-        btn_songs.setOnClickListener(new View.OnClickListener() {
+        Button btnSongs = (Button) findViewById(R.id.btn_songs);
+        btnSongs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
@@ -23,8 +23,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        Button btn_albums = (Button) findViewById(R.id.btn_albums);
-        btn_albums.setOnClickListener(new View.OnClickListener() {
+        Button btnAlbums = (Button) findViewById(R.id.btn_albums);
+        btnAlbums.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SettingsActivity.this, AlbumsActivity.class);
@@ -32,8 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        Button btn_artists = (Button) findViewById(R.id.btn_artists);
-        btn_artists.setOnClickListener(new View.OnClickListener() {
+        Button btnArtists = (Button) findViewById(R.id.btn_artists);
+        btnArtists.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SettingsActivity.this, ArtistsActivity.class);

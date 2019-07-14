@@ -25,14 +25,14 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
 
-        ArrayList<Song> songs = Song.initData();
+        ArrayList<Song> songs = Song.initSong();
 
         RVAdapter adapter = new RVAdapter(songs);
         adapter.onAttachedToRecyclerView(rv);
         rv.setAdapter(adapter);
 
-        Button btn_albums = (Button) findViewById(R.id.btn_albums);
-        btn_albums.setOnClickListener(new View.OnClickListener() {
+        Button btnAlbums = (Button) findViewById(R.id.btn_albums);
+        btnAlbums.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AlbumsActivity.class);
@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btn_artist = (Button) findViewById(R.id.btn_artists);
-        btn_artist.setOnClickListener(new View.OnClickListener() {
+        Button btnArtist = (Button) findViewById(R.id.btn_artists);
+        btnArtist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ArtistsActivity.class);
@@ -49,11 +49,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btn_settings = (Button) findViewById(R.id.btn_settings);
-        btn_settings.setOnClickListener(new View.OnClickListener() {
+        Button btnSettings = (Button) findViewById(R.id.btn_settings);
+        btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                Intent intent = new Intent(MainActivity.this, PlaySongActivity.class);
                 startActivity(intent);
             }
         });

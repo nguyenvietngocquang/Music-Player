@@ -14,14 +14,14 @@ import java.util.ArrayList;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
     public static class SongViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
-        TextView songName;
+        TextView songTitle;
         TextView songArtist;
         ImageView songPhoto;
 
         SongViewHolder(View itemView) {
             super(itemView);
             cv = (CardView) itemView.findViewById(R.id.cv);
-            songName = (TextView) itemView.findViewById(R.id.song_name);
+            songTitle = (TextView) itemView.findViewById(R.id.song_title);
             songArtist = (TextView) itemView.findViewById(R.id.song_artist);
             songPhoto = (ImageView) itemView.findViewById(R.id.song_photo);
         }
@@ -29,7 +29,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
 
     ArrayList<Song> songs;
 
-    RVAdapter(ArrayList<Song> songs){
+    RVAdapter(ArrayList<Song> songs) {
         this.songs = songs;
     }
 
@@ -47,7 +47,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
 
     @Override
     public void onBindViewHolder(SongViewHolder holder, int position) {
-        holder.songName.setText(songs.get(position).getName());
+        holder.songTitle.setText(songs.get(position).getTitle());
         holder.songArtist.setText(songs.get(position).getArtist());
         holder.songPhoto.setImageResource(songs.get(position).getPhoto());
     }
