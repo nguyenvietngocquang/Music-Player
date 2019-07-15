@@ -2,10 +2,13 @@ package com.example.musicplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,13 +22,13 @@ import java.util.Random;
 public class PlaySongActivity extends AppCompatActivity {
 
     private ArrayList<Song> songs;
-    TextView txtTitle, txtArtist, txtTimeNow, txtTimeTotal;
-    SeekBar sbSong;
-    ImageView ivPhoto;
-    ImageButton btnBack, btnReplay, btnPrev, btnPlayPause, btnNext, btnShuffle;
-    int position;
-    boolean replay = false, shuffle = false;
-    MediaPlayer mediaPlayer;
+    private TextView txtTitle, txtArtist, txtTimeNow, txtTimeTotal;
+    private SeekBar sbSong;
+    private ImageView ivPhoto;
+    private ImageButton btnBack, btnReplay, btnPrev, btnPlayPause, btnNext, btnShuffle;
+    private int position;
+    private boolean replay = false, shuffle = false, binded = false;
+    private PlaySongService songService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,25 +36,27 @@ public class PlaySongActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play_song);
 
         Intent intent = this.getIntent();
-        position = intent.getIntExtra("Position", -1);
+        position = intent.getExtras().getInt("Position");
+
+        Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
+        stopService(intentService);
+        intentService.putExtra("Position", position);
+        startService(intentService);
+        bindService(intentService, serviceConnection, BIND_AUTO_CREATE);
 
         mapping();
         songs = Song.initSong();
         createSong();
-        setTimeTotal();
-        updateTimeNow();
-        mediaPlayer.start();
 
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
+                if (songService.mediaPlayer.isPlaying()) {
                     btnPlayPause.setImageResource(R.drawable.btn_play);
                 } else {
-                    mediaPlayer.start();
                     btnPlayPause.setImageResource(R.drawable.btn_pause);
                 }
+                songService.playPause();
             }
         });
 
@@ -71,13 +76,14 @@ public class PlaySongActivity extends AppCompatActivity {
                         position = songs.size() - 1;
                     }
                 }
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                }
+                songService.stop();
+                Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
+                intentService.putExtra("Position", position);
+                startService(intentService);
+
                 createSong();
                 setTimeTotal();
                 updateTimeNow();
-                mediaPlayer.start();
                 btnPlayPause.setImageResource(R.drawable.btn_pause);
             }
         });
@@ -98,13 +104,14 @@ public class PlaySongActivity extends AppCompatActivity {
                         position = 0;
                     }
                 }
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                }
+                songService.stop();
+                Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
+                intentService.putExtra("Position", position);
+                startService(intentService);
+
                 createSong();
                 setTimeTotal();
                 updateTimeNow();
-                mediaPlayer.start();
                 btnPlayPause.setImageResource(R.drawable.btn_pause);
             }
         });
@@ -154,9 +161,24 @@ public class PlaySongActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.seekTo(sbSong.getProgress());
+                songService.seekTo(sbSong.getProgress());
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        songService.stop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (binded) {
+            unbindService(serviceConnection);
+            binded = false;
+        }
     }
 
     private void mapping() {
@@ -180,10 +202,10 @@ public class PlaySongActivity extends AppCompatActivity {
             @Override
             public void run() {
                 SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-                txtTimeNow.setText(format.format(mediaPlayer.getCurrentPosition()));
-                sbSong.setProgress(mediaPlayer.getCurrentPosition());
+                txtTimeNow.setText(format.format(songService.getCurrentPosition()));
+                sbSong.setProgress(songService.getCurrentPosition());
 
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                songService.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         if (!replay) {
@@ -200,17 +222,16 @@ public class PlaySongActivity extends AppCompatActivity {
                                     position = 0;
                                 }
                             }
-                            if (mediaPlayer.isPlaying()) {
-                                mediaPlayer.stop();
-                            }
-                            createSong();
-                            setTimeTotal();
-                            updateTimeNow();
-                            mediaPlayer.start();
-                            btnPlayPause.setImageResource(R.drawable.btn_pause);
-                        } else {
-                            mediaPlayer.start();
                         }
+                        songService.stop();
+                        Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
+                        intentService.putExtra("Position", position);
+                        startService(intentService);
+
+                        createSong();
+                        setTimeTotal();
+                        updateTimeNow();
+                        btnPlayPause.setImageResource(R.drawable.btn_pause);
                     }
                 });
 
@@ -221,14 +242,29 @@ public class PlaySongActivity extends AppCompatActivity {
 
     private void setTimeTotal() {
         SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-        txtTimeTotal.setText(format.format(mediaPlayer.getDuration()));
-        sbSong.setMax(mediaPlayer.getDuration());
+        txtTimeTotal.setText(format.format(songService.getDuration()));
+        sbSong.setMax(songService.getDuration());
     }
 
     private void createSong() {
-        mediaPlayer = MediaPlayer.create(PlaySongActivity.this, songs.get(position).getFile());
         txtTitle.setText(songs.get(position).getTitle());
         txtArtist.setText(songs.get(position).getArtist());
         ivPhoto.setImageResource(songs.get(position).getPhoto());
     }
+
+    public ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            PlaySongService.SongBinder songBinder = (PlaySongService.SongBinder) iBinder;
+            songService = songBinder.getService();
+            binded = true;
+            setTimeTotal();
+            updateTimeNow();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            binded = false;
+        }
+    };
 }
