@@ -32,7 +32,7 @@
         android:id="@+id/txt_artist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txt_title"
+        android:layout_below="@+id/txt_title"
         android:ellipsize="end"
         android:gravity="center"
         android:padding="5dp"
@@ -51,7 +51,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/seek_bar">
+        android:layout_above="@+id/seek_bar">
 
         <TextView
             android:id="@+id/timeNow"
@@ -77,7 +77,7 @@
         android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/control"
+        android:layout_above="@+id/control"
         android:layout_marginHorizontal="20dp" />
 
     <LinearLayout

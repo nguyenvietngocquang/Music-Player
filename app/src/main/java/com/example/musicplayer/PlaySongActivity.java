@@ -26,9 +26,10 @@ public class PlaySongActivity extends AppCompatActivity {
     private SeekBar sbSong;
     private ImageView ivPhoto;
     private ImageButton btnBack, btnReplay, btnPrev, btnPlayPause, btnNext, btnShuffle;
-    private int position;
-    private boolean replay = false, shuffle = false, binded = false;
+    private static int position;
+    private static boolean replay, shuffle, binded = false;
     private PlaySongService songService;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,6 @@ public class PlaySongActivity extends AppCompatActivity {
 
         mapping();
         songs = Song.initSong();
-        createSong();
 
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,11 +77,12 @@ public class PlaySongActivity extends AppCompatActivity {
                     }
                 }
                 songService.stop();
+
                 Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
                 intentService.putExtra("Position", position);
                 startService(intentService);
 
-                createSong();
+                createSong(position);
                 setTimeTotal();
                 updateTimeNow();
                 btnPlayPause.setImageResource(R.drawable.btn_pause);
@@ -105,11 +106,12 @@ public class PlaySongActivity extends AppCompatActivity {
                     }
                 }
                 songService.stop();
+
                 Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
                 intentService.putExtra("Position", position);
                 startService(intentService);
 
-                createSong();
+                createSong(position);
                 setTimeTotal();
                 updateTimeNow();
                 btnPlayPause.setImageResource(R.drawable.btn_pause);
@@ -126,6 +128,7 @@ public class PlaySongActivity extends AppCompatActivity {
                     replay = true;
                     btnReplay.setImageResource(R.drawable.btn_replay_choose);
                 }
+                PlaySongService.replay = replay;
             }
         });
 
@@ -139,6 +142,7 @@ public class PlaySongActivity extends AppCompatActivity {
                     shuffle = true;
                     btnShuffle.setImageResource(R.drawable.btn_shuffle_choose);
                 }
+                PlaySongService.shuffle = shuffle;
             }
         });
 
@@ -169,7 +173,10 @@ public class PlaySongActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        songService.stop();
+        position = PlaySongService.position;
+        createSong(PlaySongService.position);
+        setTimeTotal();
+        updateTimeNow();
     }
 
     @Override
@@ -205,7 +212,7 @@ public class PlaySongActivity extends AppCompatActivity {
                 txtTimeNow.setText(format.format(songService.getCurrentPosition()));
                 sbSong.setProgress(songService.getCurrentPosition());
 
-                songService.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                PlaySongService.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         if (!replay) {
@@ -224,17 +231,17 @@ public class PlaySongActivity extends AppCompatActivity {
                             }
                         }
                         songService.stop();
+
                         Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
                         intentService.putExtra("Position", position);
                         startService(intentService);
 
-                        createSong();
+                        createSong(position);
                         setTimeTotal();
                         updateTimeNow();
                         btnPlayPause.setImageResource(R.drawable.btn_pause);
                     }
                 });
-
                 handler.postDelayed(this, 500);
             }
         }, 100);
@@ -242,14 +249,26 @@ public class PlaySongActivity extends AppCompatActivity {
 
     private void setTimeTotal() {
         SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-        txtTimeTotal.setText(format.format(songService.getDuration()));
-        sbSong.setMax(songService.getDuration());
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), songs.get(position).getFile());
+        txtTimeTotal.setText(format.format(mediaPlayer.getDuration()));
+        sbSong.setMax(mediaPlayer.getDuration());
     }
 
-    private void createSong() {
-        txtTitle.setText(songs.get(position).getTitle());
-        txtArtist.setText(songs.get(position).getArtist());
-        ivPhoto.setImageResource(songs.get(position).getPhoto());
+    private void createSong(int pos) {
+        txtTitle.setText(songs.get(pos).getTitle());
+        txtArtist.setText(songs.get(pos).getArtist());
+        ivPhoto.setImageResource(songs.get(pos).getPhoto());
+        if (songService.mediaPlayer != null) {
+            if (songService.mediaPlayer.isPlaying()) {
+                btnPlayPause.setImageResource(R.drawable.btn_pause);
+            } else btnPlayPause.setImageResource(R.drawable.btn_play);
+        }
+        if (songService.replay) {
+            btnReplay.setImageResource(R.drawable.btn_replay_choose);
+        } else btnReplay.setImageResource(R.drawable.btn_replay);
+        if (songService.shuffle) {
+            btnShuffle.setImageResource(R.drawable.btn_shuffle_choose);
+        } else btnShuffle.setImageResource(R.drawable.btn_shuffle);
     }
 
     public ServiceConnection serviceConnection = new ServiceConnection() {
@@ -258,6 +277,10 @@ public class PlaySongActivity extends AppCompatActivity {
             PlaySongService.SongBinder songBinder = (PlaySongService.SongBinder) iBinder;
             songService = songBinder.getService();
             binded = true;
+            replay = PlaySongService.replay;
+            shuffle = PlaySongService.shuffle;
+
+            createSong(position);
             setTimeTotal();
             updateTimeNow();
         }
