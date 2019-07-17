@@ -12,10 +12,13 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
+public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
 
     private Context context;
+    private ArrayList<Song> arraylist;
+    private ArrayList<Song> songs;
 
     public interface ItemClickListener {
         void onClick(View view, int position);
@@ -48,15 +51,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
         }
     }
 
-    ArrayList<Song> songs;
-
-    RVAdapter(ArrayList<Song> songs) {
+    SongAdapter(ArrayList<Song> songs) {
         this.songs = songs;
+        this.arraylist = new ArrayList<Song>();
+        this.arraylist.addAll(MainActivity.songs);
     }
 
     @Override
     public int getItemCount() {
         return songs.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 
     @Override
@@ -84,5 +92,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.SongViewHolder> {
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        MainActivity.songs.clear();
+        if (charText.length() == 0) {
+            MainActivity.songs.addAll(arraylist);
+        } else {
+            for (Song song : arraylist) {
+                if (song.getTitle().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    MainActivity.songs.add(song);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

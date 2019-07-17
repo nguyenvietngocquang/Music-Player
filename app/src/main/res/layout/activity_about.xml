@@ -5,26 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SettingsActivity">
+    tools:context=".AboutActivity">
 
-    <SearchView
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="10dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv"
+    <TextView
+        android:id="@+id/about"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom"
-        android:layout_below="@+id/search_bar">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_above="@+id/control" />
 
     <LinearLayout
-        android:id="@+id/bottom"
+        android:id="@+id/control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -65,14 +55,14 @@
             android:textColor="#999999" />
 
         <Button
-            android:id="@+id/btn_settings"
+            android:id="@+id/btn_about"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:drawableTop="@drawable/btn_settings_choose"
-            android:text="Settings"
+            android:drawableTop="@drawable/btn_about_choose"
+            android:text="About"
             android:textColor="#990066" />
 
     </LinearLayout>

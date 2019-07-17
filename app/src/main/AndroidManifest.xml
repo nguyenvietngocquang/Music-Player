@@ -9,15 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <service
             android:name=".PlaySongService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
+        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".ArtistInfoActivity" />
         <activity android:name=".PlaySongActivity" />
-        <activity
-            android:name=".SettingsActivity"
-            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".ArtistsActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -29,6 +30,7 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

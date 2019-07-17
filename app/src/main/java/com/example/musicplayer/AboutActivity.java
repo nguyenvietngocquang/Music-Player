@@ -7,18 +7,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class SettingsActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_about);
 
         Button btnSongs = (Button) findViewById(R.id.btn_songs);
         btnSongs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                Intent intent = new Intent(AboutActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -27,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnAlbums.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingsActivity.this, AlbumsActivity.class);
+                Intent intent = new Intent(AboutActivity.this, AlbumsActivity.class);
                 startActivity(intent);
             }
         });
@@ -36,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnArtists.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingsActivity.this, ArtistsActivity.class);
+                Intent intent = new Intent(AboutActivity.this, ArtistsActivity.class);
                 startActivity(intent);
             }
         });

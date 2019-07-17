@@ -65,14 +65,14 @@
             android:textColor="#990066" />
 
         <Button
-            android:id="@+id/btn_settings"
+            android:id="@+id/btn_about"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:drawableTop="@drawable/btn_settings"
-            android:text="Settings"
+            android:drawableTop="@drawable/btn_about"
+            android:text="About"
             android:textColor="#999999" />
 
     </LinearLayout>
