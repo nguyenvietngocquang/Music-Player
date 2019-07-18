@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Song {
     private String title;
     private String artist;
-    private String album;
     private int photo;
     private int file;
     private int artistPhoto;
@@ -42,10 +41,6 @@ public class Song {
 
     public String getArtist() {
         return artist;
-    }
-
-    public String getAlbum() {
-        return album;
     }
 
     public int getPhoto() {

@@ -101,7 +101,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             MainActivity.songs.addAll(arraylist);
         } else {
             for (Song song : arraylist) {
-                if (song.getTitle().toLowerCase(Locale.getDefault()).contains(charText)) {
+                if ((song.getTitle().toLowerCase(Locale.getDefault()).contains(charText)) ||
+                        (song.getArtist().toLowerCase(Locale.getDefault()).contains(charText))) {
                     MainActivity.songs.add(song);
                 }
             }

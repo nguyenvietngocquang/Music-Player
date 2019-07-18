@@ -3,9 +3,7 @@ package com.example.musicplayer;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,26 +13,21 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Random;
-
 public class PlaySongActivity extends AppCompatActivity {
 
-    private ArrayList<Song> songs;
-    private TextView txtTitle, txtArtist, txtTimeNow, txtTimeTotal;
-    private SeekBar sbSong;
-    private ImageView ivPhoto;
-    private ImageButton btnBack, btnReplay, btnPrev, btnPlayPause, btnNext, btnShuffle;
-    private static int position;
-    private static boolean replay, shuffle, binded = false;
+    public static TextView txtTitle, txtArtist, txtTimeNow, txtTimeTotal;
+    public static SeekBar sbSong;
+    public static ImageView ivPhoto;
+    public static ImageButton btnBack, btnReplay, btnPrev, btnPlayPause, btnNext, btnShuffle;
+    public static int position;
+    public static boolean binded = false;
     private PlaySongService songService;
-    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_song);
+        mapping();
 
         Intent intent = this.getIntent();
         position = intent.getExtras().getInt("Position");
@@ -45,17 +38,9 @@ public class PlaySongActivity extends AppCompatActivity {
         startService(intentService);
         bindService(intentService, serviceConnection, BIND_AUTO_CREATE);
 
-        mapping();
-        songs = Song.initSong();
-
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (songService.mediaPlayer.isPlaying()) {
-                    btnPlayPause.setImageResource(R.drawable.btn_play);
-                } else {
-                    btnPlayPause.setImageResource(R.drawable.btn_pause);
-                }
                 songService.playPause();
             }
         });
@@ -63,86 +48,28 @@ public class PlaySongActivity extends AppCompatActivity {
         btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shuffle) {
-                    Random random = new Random();
-                    int n;
-                    do {
-                        n = random.nextInt(songs.size());
-                    } while (n == position);
-                    position = n;
-                } else {
-                    position--;
-                    if (position < 0) {
-                        position = songs.size() - 1;
-                    }
-                }
-                songService.stop();
-
-                Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
-                intentService.putExtra("Position", position);
-                startService(intentService);
-
-                createSong(position);
-                setTimeTotal();
-                updateTimeNow();
-                btnPlayPause.setImageResource(R.drawable.btn_pause);
+                songService.prev();
             }
         });
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shuffle) {
-                    Random random = new Random();
-                    int n;
-                    do {
-                        n = random.nextInt(songs.size());
-                    } while (n == position);
-                    position = n;
-                } else {
-                    position++;
-                    if (position > songs.size() - 1) {
-                        position = 0;
-                    }
-                }
-                songService.stop();
-
-                Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
-                intentService.putExtra("Position", position);
-                startService(intentService);
-
-                createSong(position);
-                setTimeTotal();
-                updateTimeNow();
-                btnPlayPause.setImageResource(R.drawable.btn_pause);
+                songService.next();
             }
         });
 
         btnReplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (replay) {
-                    replay = false;
-                    btnReplay.setImageResource(R.drawable.btn_replay);
-                } else {
-                    replay = true;
-                    btnReplay.setImageResource(R.drawable.btn_replay_choose);
-                }
-                PlaySongService.replay = replay;
+                songService.replay();
             }
         });
 
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (shuffle) {
-                    shuffle = false;
-                    btnShuffle.setImageResource(R.drawable.btn_shuffle);
-                } else {
-                    shuffle = true;
-                    btnShuffle.setImageResource(R.drawable.btn_shuffle_choose);
-                }
-                PlaySongService.shuffle = shuffle;
+                songService.shuffle();
             }
         });
 
@@ -173,10 +100,7 @@ public class PlaySongActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        position = PlaySongService.position;
-        createSong(PlaySongService.position);
-        setTimeTotal();
-        updateTimeNow();
+        songService.start();
     }
 
     @Override
@@ -203,86 +127,12 @@ public class PlaySongActivity extends AppCompatActivity {
         btnShuffle = (ImageButton) findViewById(R.id.btn_shuffle);
     }
 
-    private void updateTimeNow() {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-                txtTimeNow.setText(format.format(songService.getCurrentPosition()));
-                sbSong.setProgress(songService.getCurrentPosition());
-
-                PlaySongService.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        if (!replay) {
-                            if (shuffle) {
-                                Random random = new Random();
-                                int n;
-                                do {
-                                    n = random.nextInt(songs.size());
-                                } while (n == position);
-                                position = n;
-                            } else {
-                                position++;
-                                if (position > songs.size() - 1) {
-                                    position = 0;
-                                }
-                            }
-                        }
-                        songService.stop();
-
-                        Intent intentService = new Intent(getBaseContext(), PlaySongService.class);
-                        intentService.putExtra("Position", position);
-                        startService(intentService);
-
-                        createSong(position);
-                        setTimeTotal();
-                        updateTimeNow();
-                        btnPlayPause.setImageResource(R.drawable.btn_pause);
-                    }
-                });
-                handler.postDelayed(this, 500);
-            }
-        }, 100);
-    }
-
-    private void setTimeTotal() {
-        SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), songs.get(position).getFile());
-        txtTimeTotal.setText(format.format(mediaPlayer.getDuration()));
-        sbSong.setMax(mediaPlayer.getDuration());
-    }
-
-    private void createSong(int pos) {
-        txtTitle.setText(songs.get(pos).getTitle());
-        txtArtist.setText(songs.get(pos).getArtist());
-        ivPhoto.setImageResource(songs.get(pos).getPhoto());
-        if (songService.mediaPlayer != null) {
-            if (songService.mediaPlayer.isPlaying()) {
-                btnPlayPause.setImageResource(R.drawable.btn_pause);
-            } else btnPlayPause.setImageResource(R.drawable.btn_play);
-        }
-        if (songService.replay) {
-            btnReplay.setImageResource(R.drawable.btn_replay_choose);
-        } else btnReplay.setImageResource(R.drawable.btn_replay);
-        if (songService.shuffle) {
-            btnShuffle.setImageResource(R.drawable.btn_shuffle_choose);
-        } else btnShuffle.setImageResource(R.drawable.btn_shuffle);
-    }
-
     public ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             PlaySongService.SongBinder songBinder = (PlaySongService.SongBinder) iBinder;
             songService = songBinder.getService();
             binded = true;
-            replay = PlaySongService.replay;
-            shuffle = PlaySongService.shuffle;
-
-            createSong(position);
-            setTimeTotal();
-            updateTimeNow();
         }
 
         @Override

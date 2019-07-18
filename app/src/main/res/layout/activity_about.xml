@@ -4,14 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#e7e5e5"
     android:orientation="vertical"
     tools:context=".AboutActivity">
 
-    <TextView
-        android:id="@+id/about"
+    <LinearLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/control" />
+        android:layout_above="@+id/control"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="25dp"
+            android:fontFamily="serif-monospace"
+            android:gravity="center"
+            android:text="MEMBERS"
+            android:textColor="#111111"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="15dp"
+            android:layout_marginLeft="35dp"
+            android:text="1. Nguyễn Viết Ngọc Quang\nグエン・ヴィエット・ゴック・クアン"
+            android:textColor="#111111"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="15dp"
+            android:layout_marginLeft="35dp"
+            android:text="2. Đỗ Danh Phương\nド・ヅアン・フオン"
+            android:textColor="#111111"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="15dp"
+            android:layout_marginLeft="35dp"
+            android:text="3. Lưu Thị Thanh Ngân\nリュ・ティー・タイン・ガン"
+            android:textColor="#111111"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="15dp"
+            android:layout_marginLeft="35dp"
+            android:text="4. Nguyễn Hoàng Dũng\nグエン・ホーアン・ズン"
+            android:textColor="#111111"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/control"
