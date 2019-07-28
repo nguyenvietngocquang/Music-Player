@@ -32,11 +32,11 @@ public class AlbumsActivity extends AppCompatActivity {
             }
         });
 
-        Button btnAbout = (Button) findViewById(R.id.btn_about);
+        Button btnAbout = (Button) findViewById(R.id.btn_settings);
         btnAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AlbumsActivity.this, AboutActivity.class);
+                Intent intent = new Intent(AlbumsActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         });

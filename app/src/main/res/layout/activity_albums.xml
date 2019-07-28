@@ -42,6 +42,7 @@
             android:background="#FFFFFF"
             android:drawableTop="@drawable/btn_songs"
             android:text="Songs"
+            android:textAllCaps="false"
             android:textColor="#999999" />
 
         <Button
@@ -53,6 +54,7 @@
             android:background="#FFFFFF"
             android:drawableTop="@drawable/btn_albums_choose"
             android:text="Albums"
+            android:textAllCaps="false"
             android:textColor="#990066" />
 
         <Button
@@ -64,17 +66,19 @@
             android:background="#FFFFFF"
             android:drawableTop="@drawable/btn_artists"
             android:text="Artists"
+            android:textAllCaps="false"
             android:textColor="#999999" />
 
         <Button
-            android:id="@+id/btn_about"
+            android:id="@+id/btn_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:drawableTop="@drawable/btn_about"
-            android:text="About"
+            android:drawableTop="@drawable/btn_settings"
+            android:text="Settings"
+            android:textAllCaps="false"
             android:textColor="#999999" />
 
     </LinearLayout>

@@ -79,7 +79,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/control"
-        android:layout_marginHorizontal="20dp" />
+        android:layout_marginHorizontal="20dp"
+        android:padding="10dp"
+        android:progressBackgroundTint="#FFFFFF" />
 
     <LinearLayout
         android:id="@+id/control"
@@ -90,16 +92,16 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/btn_replay"
+            android:id="@+id/btn_shuffle"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginVertical="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_replay" />
+            android:src="@drawable/btn_shuffle" />
 
         <ImageButton
             android:id="@+id/btn_prev"
@@ -135,16 +137,16 @@
             android:src="@drawable/btn_next" />
 
         <ImageButton
-            android:id="@+id/btn_shuffle"
+            android:id="@+id/btn_repeat"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginVertical="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/btn_shuffle" />
+            android:src="@drawable/btn_repeat" />
 
     </LinearLayout>
 </RelativeLayout>

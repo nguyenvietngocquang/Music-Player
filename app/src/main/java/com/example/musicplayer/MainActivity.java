@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
 
-        Button btnAbout = (Button) findViewById(R.id.btn_about);
+        Button btnAbout = (Button) findViewById(R.id.btn_settings);
         btnAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         });

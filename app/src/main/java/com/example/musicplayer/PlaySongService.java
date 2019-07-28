@@ -14,8 +14,8 @@ import java.util.Random;
 public class PlaySongService extends Service {
     public static MediaPlayer mediaPlayer;
     private static ArrayList<Song> songs = Song.initSong();
-    public static int position;
-    public static boolean replay, shuffle;
+    public static int position, repeat;
+    public static boolean shuffle;
     private final IBinder songBinder = new SongBinder();
 
     public PlaySongService() {
@@ -105,13 +105,16 @@ public class PlaySongService extends Service {
         PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_pause);
     }
 
-    public void replay() {
-        if (replay) {
-            replay = false;
-            PlaySongActivity.btnReplay.setImageResource(R.drawable.btn_replay);
+    public void repeat() {
+        if (repeat == 0) {
+            repeat = 2;
+            PlaySongActivity.btnRepeat.setImageResource(R.drawable.btn_repeat_choose);
+        } else if (repeat == 2) {
+            repeat = 1;
+            PlaySongActivity.btnRepeat.setImageResource(R.drawable.btn_repeat_one);
         } else {
-            replay = true;
-            PlaySongActivity.btnReplay.setImageResource(R.drawable.btn_replay_choose);
+            repeat = 0;
+            PlaySongActivity.btnRepeat.setImageResource(R.drawable.btn_repeat);
         }
     }
 
@@ -151,9 +154,13 @@ public class PlaySongService extends Service {
         PlaySongActivity.txtTitle.setText(songs.get(position).getTitle());
         PlaySongActivity.txtArtist.setText(songs.get(position).getArtist());
         PlaySongActivity.ivPhoto.setImageResource(songs.get(position).getPhoto());
-        if (replay) {
-            PlaySongActivity.btnReplay.setImageResource(R.drawable.btn_replay_choose);
-        } else PlaySongActivity.btnReplay.setImageResource(R.drawable.btn_replay);
+        if (repeat == 0) {
+            PlaySongActivity.btnRepeat.setImageResource(R.drawable.btn_repeat);
+        } else if (repeat == 1) {
+            PlaySongActivity.btnRepeat.setImageResource(R.drawable.btn_repeat_one);
+        } else {
+            PlaySongActivity.btnRepeat.setImageResource(R.drawable.btn_repeat_choose);
+        }
         if (shuffle) {
             PlaySongActivity.btnShuffle.setImageResource(R.drawable.btn_shuffle_choose);
         } else PlaySongActivity.btnShuffle.setImageResource(R.drawable.btn_shuffle);
@@ -177,7 +184,7 @@ public class PlaySongService extends Service {
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
-                        if (!replay) {
+                        if (repeat != 1) {
                             if (shuffle) {
                                 Random random = new Random();
                                 int n;
@@ -192,13 +199,18 @@ public class PlaySongService extends Service {
                                 }
                             }
                         }
+
                         if (mediaPlayer.isPlaying()) {
                             mediaPlayer.stop();
                         }
                         mediaPlayer = MediaPlayer.create(getApplicationContext(), songs.get(position).getFile());
                         start();
-                        mediaPlayer.start();
-                        PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_pause);
+                        if (!shuffle && position == 0 && repeat == 0) {
+                            PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_play);
+                        } else {
+                            mediaPlayer.start();
+                            PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_pause);
+                        }
                     }
                 });
                 handler.postDelayed(this, 500);

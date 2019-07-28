@@ -18,7 +18,7 @@ public class PlaySongActivity extends AppCompatActivity {
     public static TextView txtTitle, txtArtist, txtTimeNow, txtTimeTotal;
     public static SeekBar sbSong;
     public static ImageView ivPhoto;
-    public static ImageButton btnBack, btnReplay, btnPrev, btnPlayPause, btnNext, btnShuffle;
+    public static ImageButton btnBack, btnShuffle, btnPrev, btnPlayPause, btnNext, btnRepeat;
     public static int position;
     public static boolean binded = false;
     private PlaySongService songService;
@@ -59,17 +59,17 @@ public class PlaySongActivity extends AppCompatActivity {
             }
         });
 
-        btnReplay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                songService.replay();
-            }
-        });
-
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 songService.shuffle();
+            }
+        });
+
+        btnRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                songService.repeat();
             }
         });
 
@@ -120,11 +120,11 @@ public class PlaySongActivity extends AppCompatActivity {
         sbSong = (SeekBar) findViewById(R.id.seek_bar);
         ivPhoto = (ImageView) findViewById(R.id.ivPhoto);
         btnBack = (ImageButton) findViewById(R.id.btn_back);
-        btnReplay = (ImageButton) findViewById(R.id.btn_replay);
+        btnShuffle = (ImageButton) findViewById(R.id.btn_shuffle);
         btnPrev = (ImageButton) findViewById(R.id.btn_prev);
         btnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
         btnNext = (ImageButton) findViewById(R.id.btn_next);
-        btnShuffle = (ImageButton) findViewById(R.id.btn_shuffle);
+        btnRepeat = (ImageButton) findViewById(R.id.btn_repeat);
     }
 
     public ServiceConnection serviceConnection = new ServiceConnection() {

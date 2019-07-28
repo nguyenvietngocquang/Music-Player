@@ -56,11 +56,11 @@ public class ArtistsActivity extends AppCompatActivity implements SearchView.OnQ
             }
         });
 
-        Button btnAbout = (Button) findViewById(R.id.btn_about);
+        Button btnAbout = (Button) findViewById(R.id.btn_settings);
         btnAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ArtistsActivity.this, AboutActivity.class);
+                Intent intent = new Intent(ArtistsActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         });
