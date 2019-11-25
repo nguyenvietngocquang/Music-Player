@@ -54,7 +54,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     SongAdapter(ArrayList<Song> songs) {
         this.songs = songs;
         this.arraylist = new ArrayList<Song>();
-        this.arraylist.addAll(MainActivity.songs);
+        this.arraylist.addAll(this.songs);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class PlaySongService extends Service {
     public static MediaPlayer mediaPlayer;
     private static ArrayList<Song> songs = Song.initSong();
     public static int position, repeat;
-    public static boolean shuffle;
+    public static boolean shuffle, seekbarPress;
     private final IBinder songBinder = new SongBinder();
 
     public PlaySongService() {
@@ -173,49 +173,51 @@ public class PlaySongService extends Service {
     }
 
     private void updateTimeNow() {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-                PlaySongActivity.txtTimeNow.setText(format.format(mediaPlayer.getCurrentPosition()));
-                PlaySongActivity.sbSong.setProgress(mediaPlayer.getCurrentPosition());
+        if (!seekbarPress) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    SimpleDateFormat format = new SimpleDateFormat("mm:ss");
+                    PlaySongActivity.txtTimeNow.setText(format.format(mediaPlayer.getCurrentPosition()));
+                    PlaySongActivity.sbSong.setProgress(mediaPlayer.getCurrentPosition());
 
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        if (repeat != 1) {
-                            if (shuffle) {
-                                Random random = new Random();
-                                int n;
-                                do {
-                                    n = random.nextInt(songs.size());
-                                } while (n == position);
-                                position = n;
-                            } else {
-                                position++;
-                                if (position > songs.size() - 1) {
-                                    position = 0;
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            if (repeat != 1) {
+                                if (shuffle) {
+                                    Random random = new Random();
+                                    int n;
+                                    do {
+                                        n = random.nextInt(songs.size());
+                                    } while (n == position);
+                                    position = n;
+                                } else {
+                                    position++;
+                                    if (position > songs.size() - 1) {
+                                        position = 0;
+                                    }
                                 }
                             }
-                        }
 
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.stop();
+                            if (mediaPlayer.isPlaying()) {
+                                mediaPlayer.stop();
+                            }
+                            mediaPlayer = MediaPlayer.create(getApplicationContext(), songs.get(position).getFile());
+                            start();
+                            if (!shuffle && position == 0 && repeat == 0) {
+                                PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_play);
+                            } else {
+                                mediaPlayer.start();
+                                PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_pause);
+                            }
                         }
-                        mediaPlayer = MediaPlayer.create(getApplicationContext(), songs.get(position).getFile());
-                        start();
-                        if (!shuffle && position == 0 && repeat == 0) {
-                            PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_play);
-                        } else {
-                            mediaPlayer.start();
-                            PlaySongActivity.btnPlayPause.setImageResource(R.drawable.btn_pause);
-                        }
-                    }
-                });
-                handler.postDelayed(this, 500);
-            }
-        }, 100);
+                    });
+                    handler.postDelayed(this, 500);
+                }
+            }, 100);
+        }
     }
 
     public void seekTo(int progress) {

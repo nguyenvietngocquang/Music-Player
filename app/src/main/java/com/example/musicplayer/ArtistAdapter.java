@@ -52,7 +52,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
     ArtistAdapter(ArrayList<Artist> artists) {
         this.artists = artists;
         this.arraylist = new ArrayList<Artist>();
-        this.arraylist.addAll(ArtistsActivity.artists);
+        this.arraylist.addAll(this.artists);
     }
 
     @Override

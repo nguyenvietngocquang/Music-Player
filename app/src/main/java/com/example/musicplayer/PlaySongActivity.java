@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
+
 public class PlaySongActivity extends AppCompatActivity {
 
     public static TextView txtTitle, txtArtist, txtTimeNow, txtTimeTotal;
@@ -84,14 +86,21 @@ public class PlaySongActivity extends AppCompatActivity {
         sbSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if (b) {
+                    SimpleDateFormat format = new SimpleDateFormat("mm:ss");
+                    txtTimeNow.setText(format.format(i));
+                    sbSong.setProgress(i);
+                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                songService.seekbarPress = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                songService.seekbarPress = false;
                 songService.seekTo(sbSong.getProgress());
             }
         });
